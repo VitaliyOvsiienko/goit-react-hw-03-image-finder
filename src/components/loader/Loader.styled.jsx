@@ -1,6 +1,6 @@
-import styled from "@emotion/styled";
+import styled from '@emotion/styled';
 
-export const LoaderWrapper = styled.div`
+export const Wrap = styled.div`
     position: fixed;
     top: 50%;
     left: 50%;

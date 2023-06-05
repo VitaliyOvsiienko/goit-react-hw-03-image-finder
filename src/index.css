@@ -20,7 +20,7 @@ img {
   height: auto;
 }
 
-/* html {
+html {
   box-sizing: border-box;
   width: 100vw;
   overflow-x: hidden;
@@ -30,4 +30,4 @@ img {
 *::before,
 *::after {
   box-sizing: inherit;
-} */
+}

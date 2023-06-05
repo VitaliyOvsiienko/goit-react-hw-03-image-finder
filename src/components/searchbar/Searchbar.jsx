@@ -1,23 +1,21 @@
-import { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Header, Form, Button, ButtonLabel, Input } from './Searchbar.styled';
+import { Component } from "react";
+import { Header, Form, Button, SearchIcon, ButtonLabel, Input } from './Searchbar.styled';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
-
-
-export class Searchbar extends Component {
+export class Searchbar extends Component  {
     state = {
         query: '',
     };
 
-    handleInputChange = event => {
-        this.setState({ query: event.currentTarget.value });
+    handleInputChange = e => {
+        this.setState({ query: e.currentTarget.value });
     };
 
-    handleSubmit = event => {
-        event.preventDefault();
-
+    handleSubmit = e => {
+        e.preventDefault();
         if (this.state.query.trim() === '') {
-            alert('Sorry, enter something in the search line');
+            Notify.failure('Sorry, enter something in search line.');
             return;
         }
 
@@ -25,12 +23,13 @@ export class Searchbar extends Component {
         this.setState({ query: '' });
     }
 
-    render () {
-    return (
+    render() {
+        return (
             <Header>
                 <Form onSubmit={this.handleSubmit}>
                     <Button type="submit"
                         aria-label="Search">
+                        <SearchIcon size={20} />
                         <ButtonLabel>Search</ButtonLabel>
                     </Button>
                     <Input autoComplete="off"
@@ -42,7 +41,7 @@ export class Searchbar extends Component {
                 </Form>
             </Header>
         );
-};
+    };
 };
 
 Searchbar.propTypes = {
