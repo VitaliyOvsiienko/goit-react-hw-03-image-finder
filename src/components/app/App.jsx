@@ -1,7 +1,7 @@
 import { Component } from "react";
 import { Container } from './App.styled';
 import { Searchbar } from "../searchbar";
-import { ImageGallery } from "components/imageGallery";
+import { ImageGallery } from "../imageGallery";
 
 
 export class App extends Component {
@@ -9,14 +9,14 @@ export class App extends Component {
     query: '',
   }
   
-  SearchFormSubmitHandler = (query) => {
+  onSearchFormSubmit = (query) => {
     this.setState({ query });
   };
 
   render() {
     return(
       <Container>
-        <Searchbar onSubmit={this.SearchFormSubmitHandler} />
+        <Searchbar onSubmit={this.onSearchFormSubmit} />
         <ImageGallery query={this.state.query} />
       </Container>
     );

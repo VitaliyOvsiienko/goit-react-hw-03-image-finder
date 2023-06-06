@@ -1,12 +1,11 @@
-import PropTypes from 'prop-types';
 import { Component } from "react";
+import PropTypes from 'prop-types';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import { Gallery } from './ImageGallery.styled';
+import { ImageGalleryItem } from 'components/imageGalleryItem';
 import { Button } from 'components/button';
 import { Loader } from 'components/loader';
-import {fetchGalleryWithQuery} from '../../serviceApi/api'
-import { ImageGalleryItem } from 'components/imageGalleryItem';
-import { Gallery } from './ImageGallery.styled';
-import { Notify } from 'notiflix/build/notiflix-notify-aio';
-
+import {getGalleryImages} from '../../serviceApi'
 
 export class ImageGallery extends Component {
     state = {
@@ -17,17 +16,18 @@ export class ImageGallery extends Component {
     };
 
     async componentDidUpdate(prevProps, prevState) {
-        const prevSearchQuery = prevProps.query;
-        const nextSearchQuery = this.props.query;
+        
+        const { query: previousInquiry } = prevProps;
+        const { query: nextInquiry } = this.props;
 
-        if (prevSearchQuery !== nextSearchQuery) {
+        if (previousInquiry !== nextInquiry) {
             this.setState({ status: 'pending', page: 1 });
 
             try {
-                const { hits, total } = await fetchGalleryWithQuery(nextSearchQuery, 1);
+                const { hits, total } = await getGalleryImages(nextInquiry, 1);
 
                 if (total === 0) {
-                    const error = new Error('Sorry, there are no images matching your search query.')
+                    const error = new Error('Houston we have a problem')
                     this.setState({ error, status: 'rejected' })
                     return;
                 };
@@ -43,9 +43,9 @@ export class ImageGallery extends Component {
         };
     };
 
-    loadMoreHandler = async () => { 
+    handleLoadMore = async () => { 
         try {
-            const { hits } = await fetchGalleryWithQuery(this.props.query, this.state.page);
+            const { hits } = await getGalleryImages(this.props.query, this.state.page);
             this.setState(prevState => {
                     return {
                         gallery: [...prevState.gallery, ...hits],
@@ -79,7 +79,7 @@ export class ImageGallery extends Component {
                         />
                     ))}
                     </Gallery>
-                    <Button onClick={this.loadMoreHandler}>Load more</Button>
+                    <Button onClick={this.handleLoadMore}>Load more</Button>
             </>
         };
     };
@@ -87,4 +87,4 @@ export class ImageGallery extends Component {
 
 ImageGallery.propTypes = {
     query: PropTypes.string.isRequired,
-}
+};

@@ -15,7 +15,7 @@ export class Searchbar extends Component  {
     handleSubmit = e => {
         e.preventDefault();
         if (this.state.query.trim() === '') {
-            Notify.failure('Sorry, enter something in search line.');
+            Notify.failure('Sorry, enter something in search line');
             return;
         }
 

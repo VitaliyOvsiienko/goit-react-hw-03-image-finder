@@ -1,13 +1,13 @@
 import PropTypes from 'prop-types';
-import { Btn } from './Button.styled';
+import { LoadButton } from './Button.styled';
 
-export const Button = ({ children,onClick}) => { 
+export const Button = ({ children, onClick }) => {
     return (
-        <Btn type="button" onClick={onClick} aria-label="Load more">
+        <LoadButton type="button" onClick={onClick} aria-label="Load more">
             {children}
-        </Btn>
+        </LoadButton>
     )
-}
+};
 
 Button.propTypes = {
     children: PropTypes.node,

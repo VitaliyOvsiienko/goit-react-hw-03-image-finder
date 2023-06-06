@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-export const Btn = styled.button`
+export const LoadButton = styled.button`
     width: 120px;
     margin-right: auto;
     margin-left: auto;
@@ -27,4 +27,4 @@ export const Btn = styled.button`
     &:focus {
         background-color: #303f9f;
 }
-`
+`;

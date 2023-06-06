@@ -1,7 +1,8 @@
-import PropTypes from 'prop-types';
 import { Component } from "react";
-import { Item, Image } from './ImageGalleryItem.styled';
+import PropTypes from 'prop-types';
 import { Modal } from 'components/modal';
+import { Item, Image } from './ImageGalleryItem.styled';
+
 
 export class ImageGalleryItem extends Component {
     state = {
@@ -9,33 +10,33 @@ export class ImageGalleryItem extends Component {
     };
 
     toggleModal = () => {
-        this.setState(({isShowModal}) => ({
+        this.setState(({ isShowModal }) => ({
             isShowModal: !isShowModal
         }));
-    }
+    };
     
     render() {
         const { url, alt, largeImage } = this.props
         return (
             <>
-            <Item onClick={this.toggleModal}>
-                <Image
-                    src={url}
-                    alt={alt}
-                    loading="lazy" />
+                <Item onClick={this.toggleModal}>
+                    <Image
+                        src={url}
+                        alt={alt}
+                        loading="lazy" />
                 </Item>
                 {this.state.isShowModal &&
                     <Modal onClose={this.toggleModal}>
-                        <img alt={alt} src={largeImage}/>
+                        <img alt={alt} src={largeImage} />
                     </Modal>
                 }
             </>
-        )
-    }
-}
+        );
+    };
+};
 
 ImageGalleryItem.propTypes = {
     url: PropTypes.string.isRequired,
     alt: PropTypes.string.isRequired,
     largeImage: PropTypes.string.isRequired,
-}
+};
