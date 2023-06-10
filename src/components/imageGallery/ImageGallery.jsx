@@ -15,61 +15,72 @@ export class ImageGallery extends Component {
         page: 1,
     };
 
-    async componentDidUpdate(prevProps, prevState) {
-        
-        const { query: previousInquiry } = prevProps;
-        const { query: nextInquiry } = this.props;
+async componentDidUpdate(prevProps, prevState) {
+    const { query: previousInquiry } = prevProps;
+    const { query: nextInquiry } = this.props;
 
-        if (previousInquiry !== nextInquiry) {
-            this.setState({ status: 'pending', page: 1 });
+    if (previousInquiry !== nextInquiry) {
+        this.setState({ status: 'pending', page: 1 });
 
-            try {
-                const { hits, total } = await getGalleryImages(nextInquiry, 1);
+        try {
+            const { hits, total } = await getGalleryImages(nextInquiry, 1);
 
-                if (total === 0) {
-                    const error = new Error('Houston we have a problem')
-                    this.setState({ error, status: 'rejected' })
-                    return;
-                };
+            if (total === 0) {
+                const error = new Error('Houston we have a problem')
+                this.setState({ error, status: 'rejected', loadingPictures: false })
+                return;
+            };
 
-                this.setState(prevState => {
-                    return {
-                        gallery: hits,
-                        status: 'resolved',
-                        page: prevState.page + 1,
-                    }
-                });
-            } catch (error) {this.setState({ error, status: 'rejected' });}
-        };
+            this.setState(prevState => {
+                return {
+                    gallery: hits,
+                    status: 'resolved',
+                    page: prevState.page + 1,
+                    loadingPictures: true
+                }
+            });
+        } catch (error) {
+            this.setState({ error, status: 'rejected', loadingPictures: false });
+        }
     };
+    };
+    
+
 
     handleLoadMore = async () => { 
-        try {
-            const { hits } = await getGalleryImages(this.props.query, this.state.page);
-            this.setState(prevState => {
-                    return {
-                        gallery: [...prevState.gallery, ...hits],
-                        page: prevState.page + 1,
-                    }
-                });
-        } catch (error) {this.setState({ error, status: 'rejected' });}
+    try {
+        const { hits } = await getGalleryImages(this.props.query, this.state.page);
+        if (hits.length === 0) {
+            this.setState({ loadingPictures: false });
+            return;
+        }
+        this.setState(prevState => {
+            return {
+                gallery: [...prevState.gallery, ...hits],
+                page: prevState.page + 1,
+            };
+        });
+    } catch (error) {
+        this.setState({ error, status: 'rejected' });
+    }
+};
+
+render() {
+    const { gallery, error, status, loadingPictures } = this.state;
+
+    if (status === 'pending') {
+        return <Loader />
     };
 
-    render() {
-        const { gallery, error, status } = this.state;
+    if (status === 'rejected') {
+        Notify.failure(`${error.message}`)
+        return;
+    };
 
-        if (status === 'pending') {
-            return <Loader/>
-        };
-
-        if (status === 'rejected') {
-            Notify.failure(`${error.message}`)
-            return;
-        };
-
-        if (status === 'resolved') {
-            return <>
-                    <Gallery>
+    if (status === 'resolved') {
+        return (
+            <>
+                <Gallery>
                     {gallery.map(({ id, webformatURL, tags, largeImageURL }) => (
                         <ImageGalleryItem
                             key={id}
@@ -78,12 +89,16 @@ export class ImageGallery extends Component {
                             largeImage={largeImageURL}
                         />
                     ))}
-                    </Gallery>
+                </Gallery>
+                {loadingPictures && (
                     <Button onClick={this.handleLoadMore}>Load more</Button>
+                )}
             </>
-        };
+        );
+    }
     };
-}
+    
+};
 
 ImageGallery.propTypes = {
     query: PropTypes.string.isRequired,
