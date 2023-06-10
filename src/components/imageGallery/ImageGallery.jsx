@@ -50,9 +50,9 @@ async componentDidUpdate(prevProps, prevState) {
     handleLoadMore = async () => { 
     try {
         const { hits } = await getGalleryImages(this.props.query, this.state.page);
-        if (hits.length === 0) {
+       
+        if (hits.length < 12) {
             this.setState({ loadingPictures: false });
-            return;
         }
         this.setState(prevState => {
             return {
@@ -67,7 +67,7 @@ async componentDidUpdate(prevProps, prevState) {
 
 render() {
     const { gallery, error, status, loadingPictures } = this.state;
-
+    
     if (status === 'pending') {
         return <Loader />
     };
@@ -90,14 +90,13 @@ render() {
                         />
                     ))}
                 </Gallery>
-                {loadingPictures && (
+                {loadingPictures && gallery.length >= 12 &&  (
                     <Button onClick={this.handleLoadMore}>Load more</Button>
                 )}
             </>
         );
     }
     };
-    
 };
 
 ImageGallery.propTypes = {
