@@ -14,43 +14,49 @@ export class ImageGallery extends Component {
         status: 'idle',
         page: 1,
     };
-
-async componentDidUpdate(prevProps, prevState) {
-    const { query: previousInquiry } = prevProps;
-    const { query: nextInquiry } = this.props;
-
-    if (previousInquiry !== nextInquiry) {
+    
+    
+    async componentDidUpdate(prevProps, prevState) {
+    
+        const { query: previousInquiry } = prevProps;
+        const { query: nextInquiry } = this.props;
+    
+    // console.log(previousInquiry, nextInquiry);
+    // console.log(prevState, this.state);
+    
+    if (previousInquiry !== nextInquiry || prevState.page !== this.state.page) {
+    if (this.state.status === 'idle') {
         this.setState({ status: 'pending', page: 1 });
 
         try {
             const { hits, total } = await getGalleryImages(nextInquiry, 1);
 
             if (total === 0) {
-                const error = new Error('Houston we have a problem')
-                this.setState({ error, status: 'rejected', loadingPictures: false })
+                const error = new Error('Houston we have a problem');
+                this.setState({ error, status: 'rejected', loadingPictures: false });
                 return;
-            };
+            }
 
             this.setState(prevState => {
                 return {
                     gallery: hits,
                     status: 'resolved',
                     page: prevState.page + 1,
-                    loadingPictures: true
-                }
+                    loadingPictures: true,
+                };
             });
         } catch (error) {
             this.setState({ error, status: 'rejected', loadingPictures: false });
-        }
-    };
+        };
+            };
+        };
+
     };
     
-
-
-    handleLoadMore = async () => { 
-    try {
+    
+    handleLoadMore = async () => {
         const { hits } = await getGalleryImages(this.props.query, this.state.page);
-       
+        
         if (hits.length < 12) {
             this.setState({ loadingPictures: false });
         }
@@ -60,11 +66,8 @@ async componentDidUpdate(prevProps, prevState) {
                 page: prevState.page + 1,
             };
         });
-    } catch (error) {
-        this.setState({ error, status: 'rejected' });
-    }
 };
-
+    
 render() {
     const { gallery, error, status, loadingPictures } = this.state;
     
