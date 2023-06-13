@@ -15,24 +15,19 @@ export class ImageGallery extends Component {
         page: 1,
     };
     
-    
+
     async componentDidUpdate(prevProps, prevState) {
-    
-        const { query: previousInquiry } = prevProps;
-        const { query: nextInquiry } = this.props;
-    
-    // console.log(previousInquiry, nextInquiry);
-    // console.log(prevState, this.state);
-    
-    if (previousInquiry !== nextInquiry || prevState.page !== this.state.page) {
-    if (this.state.status === 'idle') {
-        this.setState({ status: 'pending', page: 1 });
+    const { query: previousInquiry } = prevProps;
+    const { query: nextInquiry } = this.props;
+
+    if (previousInquiry !== nextInquiry) {
+        this.setState({ status: 'pending', page: 1, gallery: [] });
 
         try {
             const { hits, total } = await getGalleryImages(nextInquiry, 1);
 
             if (total === 0) {
-                const error = new Error('Houston we have a problem');
+                const error = new Error('Houston, we have a problem');
                 this.setState({ error, status: 'rejected', loadingPictures: false });
                 return;
             }
@@ -47,13 +42,10 @@ export class ImageGallery extends Component {
             });
         } catch (error) {
             this.setState({ error, status: 'rejected', loadingPictures: false });
-        };
-            };
-        };
+        }
+    }
+}
 
-    };
-    
-    
     handleLoadMore = async () => {
         const { hits } = await getGalleryImages(this.props.query, this.state.page);
         
@@ -66,7 +58,8 @@ export class ImageGallery extends Component {
                 page: prevState.page + 1,
             };
         });
-};
+    };
+
     
 render() {
     const { gallery, error, status, loadingPictures } = this.state;
@@ -105,3 +98,21 @@ render() {
 ImageGallery.propTypes = {
     query: PropTypes.string.isRequired,
 };
+
+
+
+
+
+
+
+
+
+
+    //  handleLoadMore = () => {
+        
+    //     this.setState(prevState => {
+    //         return {
+    //             page: prevState.page + 1,
+    //         };
+    //     });
+    // };
