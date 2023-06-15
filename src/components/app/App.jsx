@@ -10,7 +10,7 @@ export class App extends Component {
   }
   
   onSearchFormSubmit = (query) => {
-    this.setState({ query, images: [] });
+    this.setState({ query, gallery: [] });
   };
 
   render() {
